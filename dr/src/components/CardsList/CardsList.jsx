@@ -21,6 +21,7 @@ import onem from "../../assets/user/1.jpg";
 import twom from "../../assets/user/2.jpg";
 import threm from "../../assets/user/3.jpg";
 import form from "../../assets/user/4.jpg";
+import error from "../../assets/user/error.jpg";
 import { toast } from "react-toastify";
 
 const errors = ["Даже не думай!", "Это судьба!", "Не тебе решать!", "Только вперед, не шагу назад!"];
@@ -70,6 +71,13 @@ const cards = [
   },
 ];
 
+const errorModal = {
+  img: error,
+  text: "ЕЩЕ РАЗ НАЖМЕШЬ НА КРЕСТИК И ...",
+};
+
+const TITLE = ["ТвойЛичныйТиндер", "Романтичное название", "Тьюр", "ТуДу", "АЙЛОВЮ"];
+
 const Modal = ({ onClose, info }) => {
   const onWrapperClick = (event) => {
     if (event.target.classList.contains("modal-wrapper")) onClose();
@@ -94,7 +102,7 @@ export const CardsList = () => {
   const [countErrors, setCountErrors] = useState(0);
 
   const [openModal, setOpenModal] = useState(false);
-
+  const [openErrorModal, setOpenErrorModal] = useState(false);
   // const [lastDirection, setLastDirection] = useState();
   // used for outOfFrame closure
   const currentIndexRef = useRef(currentIndex);
@@ -149,6 +157,7 @@ export const CardsList = () => {
     toast.error(errors[countErrors]);
     setCountErrors(countErrors + 1);
     if (countErrors === errors.length) {
+      setOpenErrorModal(true);
       setCountErrors(0);
     }
   };
@@ -156,10 +165,14 @@ export const CardsList = () => {
   const onCloseModal = () => {
     setOpenModal(false);
   };
+  const onCloseErrorModal = () => {
+    setOpenErrorModal(false);
+  };
+
   return (
     <>
       <div className="cardsList">
-        <h1 className="cardsList-title">ВладиТиндер</h1>
+        <h1 className="cardsList-title">{TITLE[currentIndex] || "ТвойЛичныйТиндер"}</h1>
         <div className="cardContainer">
           {cards.map((character, index) => (
             <TinderCard
@@ -218,6 +231,7 @@ export const CardsList = () => {
       {openModal && cards[currentIndex + 1]?.modal && (
         <Modal onClose={onCloseModal} info={cards[currentIndex + 1].modal} />
       )}
+      {openErrorModal && <Modal onClose={onCloseErrorModal} info={errorModal} />}
     </>
   );
 };
